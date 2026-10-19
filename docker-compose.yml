@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: ecotrack-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ecotrack
+      POSTGRES_USER: ecotrack
+      POSTGRES_PASSWORD: ecotrack_dev
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - ecotrack-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  ecotrack-postgres-data:

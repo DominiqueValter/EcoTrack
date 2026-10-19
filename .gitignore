@@ -1,0 +1,25 @@
+# .NET
+**/bin/
+**/obj/
+.vs/
+*.user
+*.suo
+
+# Visual Studio Code
+.vscode/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Node
+**/node_modules/
+**/dist/
+
+# Logs
+*.log
+
+# Local ASP.NET configuration
+backend/EcoTrack.API/appsettings.json
+backend/EcoTrack.API/appsettings.Development.json
