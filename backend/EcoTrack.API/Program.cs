@@ -1,6 +1,11 @@
 using EcoTrack.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
+using EcoTrack.Application.Interfaces;
+using EcoTrack.Application.Services;
+using EcoTrack.Infrastructure.Repositories;
+using EcoTrack.Application.DTOs.Clientes;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Banco de dados
@@ -8,6 +13,9 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<EcoTrackDbContext>(options =>
     options.UseNpgsql(connectionString));
+
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<ClienteService>();
 
 // OpenAPI
 builder.Services.AddOpenApi();
@@ -22,25 +30,20 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Health check do banco
-app.MapGet("/health/database", async (EcoTrackDbContext db) =>
+app.MapGet("/clientes", async (ClienteService clienteService) =>
 {
-    try
-    {
-        await db.Database.OpenConnectionAsync();
-        await db.Database.CloseConnectionAsync();
+    var clientes = await clienteService.ListarTodosAsync();
 
-        return Results.Ok(new
-        {
-            database = "connected"
-        });
-    }
-    catch
-    {
-        return Results.Problem(
-            title: "Database connection failed",
-            statusCode: 500);
-    }
+    return Results.Ok(clientes);
+});
+
+app.MapPost("/clientes", async (
+    CriarClienteDto dto,
+    ClienteService clienteService) =>
+{
+    var cliente = await clienteService.CriarAsync(dto);
+
+    return Results.Created($"/clientes/{cliente.Id}", cliente);
 });
 
 app.Run();
