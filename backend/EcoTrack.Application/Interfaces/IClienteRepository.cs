@@ -6,5 +6,7 @@ public interface IClienteRepository
 {
     Task<List<Cliente>> ListarTodosAsync();
 
+    Task<Cliente?> BuscarPorIdAsync(Guid id);
     Task<Cliente> CriarAsync(Cliente cliente);
+
 }

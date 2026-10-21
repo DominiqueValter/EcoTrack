@@ -17,7 +17,10 @@ public class ClienteService
     {
         return await _clienteRepository.ListarTodosAsync();
     }
-
+    public async Task<Cliente?> BuscarPorIdAsync(Guid id)
+    {
+        return await _clienteRepository.BuscarPorIdAsync(id);
+    }
     public async Task<Cliente> CriarAsync(CriarClienteDto dto)
     {
         var cliente = new Cliente

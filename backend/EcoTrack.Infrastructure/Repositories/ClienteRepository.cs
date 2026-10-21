@@ -21,6 +21,14 @@ public class ClienteRepository : IClienteRepository
             .ToListAsync();
     }
 
+    public async Task<Cliente?> BuscarPorIdAsync(Guid id)
+    {
+        // Usamos AsNoTracking para consultas de leitura, otimizando a performance
+        return await _context.Clientes
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id);
+    }
+
     public async Task<Cliente> CriarAsync(Cliente cliente)
     {
         await _context.Clientes.AddAsync(cliente);

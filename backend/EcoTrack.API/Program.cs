@@ -2,9 +2,8 @@ using EcoTrack.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 using EcoTrack.Application.Interfaces;
-using EcoTrack.Application.Services;
 using EcoTrack.Infrastructure.Repositories;
-using EcoTrack.Application.DTOs.Clientes;
+using EcoTrack.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +18,7 @@ builder.Services.AddScoped<ClienteService>();
 
 // OpenAPI
 builder.Services.AddOpenApi();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -29,21 +29,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.MapGet("/clientes", async (ClienteService clienteService) =>
-{
-    var clientes = await clienteService.ListarTodosAsync();
-
-    return Results.Ok(clientes);
-});
-
-app.MapPost("/clientes", async (
-    CriarClienteDto dto,
-    ClienteService clienteService) =>
-{
-    var cliente = await clienteService.CriarAsync(dto);
-
-    return Results.Created($"/clientes/{cliente.Id}", cliente);
-});
+app.MapControllers();
 
 app.Run();
