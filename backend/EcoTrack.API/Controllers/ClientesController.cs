@@ -42,4 +42,30 @@ public class ClientesController : ControllerBase
 
         return Created($"/clientes/{cliente.Id}", cliente);
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Atualizar(Guid id, AtualizarClienteDto dto)
+    {
+        var cliente = await _clienteService.AtualizarAsync(id, dto);
+
+        if (cliente == null)
+        {
+            return NotFound(new { mensagem = "Cliente não encontrado." });
+        }
+
+        return Ok(cliente);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Desativar(Guid id)
+    {
+        var sucesso = await _clienteService.DesativarAsync(id);
+
+        if (!sucesso)
+        {
+            return NotFound(new { mensagem = "Cliente não encontrado." });
+        }
+
+        return NoContent(); // Retorna 204 indicando que a requisição foi processada com sucesso
+    }
 }

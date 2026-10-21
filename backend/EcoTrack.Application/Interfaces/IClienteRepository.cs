@@ -8,5 +8,5 @@ public interface IClienteRepository
 
     Task<Cliente?> BuscarPorIdAsync(Guid id);
     Task<Cliente> CriarAsync(Cliente cliente);
-
+    Task<Cliente> AtualizarAsync(Cliente cliente);
 }

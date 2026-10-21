@@ -13,8 +13,17 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<EcoTrackDbContext>(options =>
     options.UseNpgsql(connectionString));
 
+// Repositórios
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<ICategoriaServicoRepository, CategoriaServicoRepository>();
+builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
+builder.Services.AddScoped<IProcessoAmbientalRepository, ProcessoAmbientalRepository>();
+
+// Serviços
 builder.Services.AddScoped<ClienteService>();
+builder.Services.AddScoped<CategoriaServicoService>();
+builder.Services.AddScoped<ServicoService>();
+builder.Services.AddScoped<ProcessoAmbientalService>();
 
 // OpenAPI
 builder.Services.AddOpenApi();

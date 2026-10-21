@@ -18,6 +18,7 @@ public class ClienteRepository : IClienteRepository
     {
         return await _context.Clientes
             .AsNoTracking()
+            .Where(c => c.Ativo) // Retorna apenas clientes não desativados
             .ToListAsync();
     }
 
@@ -32,6 +33,14 @@ public class ClienteRepository : IClienteRepository
     public async Task<Cliente> CriarAsync(Cliente cliente)
     {
         await _context.Clientes.AddAsync(cliente);
+        await _context.SaveChangesAsync();
+
+        return cliente;
+    }
+
+    public async Task<Cliente> AtualizarAsync(Cliente cliente)
+    {
+        _context.Clientes.Update(cliente);
         await _context.SaveChangesAsync();
 
         return cliente;

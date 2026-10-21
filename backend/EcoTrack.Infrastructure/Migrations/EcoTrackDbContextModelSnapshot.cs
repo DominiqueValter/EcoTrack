@@ -22,6 +22,33 @@ namespace EcoTrack.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("EcoTrack.Domain.Entities.CategoriaServico", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Descricao")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CategoriasServico");
+                });
+
             modelBuilder.Entity("EcoTrack.Domain.Entities.Cliente", b =>
                 {
                     b.Property<Guid>("Id")
@@ -80,6 +107,167 @@ namespace EcoTrack.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Clientes");
+                });
+
+            modelBuilder.Entity("EcoTrack.Domain.Entities.ProcessoAmbiental", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ClienteId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DataAbertura")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DataConclusao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("NumeroProcesso")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
+
+                    b.ToTable("ProcessosAmbientais");
+                });
+
+            modelBuilder.Entity("EcoTrack.Domain.Entities.ProcessoServico", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DataFim")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DataInicio")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Observacao")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ProcessoAmbientalId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ServicoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProcessoAmbientalId");
+
+                    b.HasIndex("ServicoId");
+
+                    b.ToTable("ProcessosServicos");
+                });
+
+            modelBuilder.Entity("EcoTrack.Domain.Entities.Servico", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("CategoriaServicoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Descricao")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoriaServicoId");
+
+                    b.ToTable("Servicos");
+                });
+
+            modelBuilder.Entity("EcoTrack.Domain.Entities.ProcessoAmbiental", b =>
+                {
+                    b.HasOne("EcoTrack.Domain.Entities.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+                });
+
+            modelBuilder.Entity("EcoTrack.Domain.Entities.ProcessoServico", b =>
+                {
+                    b.HasOne("EcoTrack.Domain.Entities.ProcessoAmbiental", "ProcessoAmbiental")
+                        .WithMany("ProcessoServicos")
+                        .HasForeignKey("ProcessoAmbientalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EcoTrack.Domain.Entities.Servico", "Servico")
+                        .WithMany()
+                        .HasForeignKey("ServicoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ProcessoAmbiental");
+
+                    b.Navigation("Servico");
+                });
+
+            modelBuilder.Entity("EcoTrack.Domain.Entities.Servico", b =>
+                {
+                    b.HasOne("EcoTrack.Domain.Entities.CategoriaServico", "CategoriaServico")
+                        .WithMany("Servicos")
+                        .HasForeignKey("CategoriaServicoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CategoriaServico");
+                });
+
+            modelBuilder.Entity("EcoTrack.Domain.Entities.CategoriaServico", b =>
+                {
+                    b.Navigation("Servicos");
+                });
+
+            modelBuilder.Entity("EcoTrack.Domain.Entities.ProcessoAmbiental", b =>
+                {
+                    b.Navigation("ProcessoServicos");
                 });
 #pragma warning restore 612, 618
         }
