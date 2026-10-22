@@ -109,6 +109,139 @@ namespace EcoTrack.Infrastructure.Migrations
                     b.ToTable("Clientes");
                 });
 
+            modelBuilder.Entity("EcoTrack.Domain.Entities.Condicionante", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("LicencaAmbientalId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Observacao")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("Prazo")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LicencaAmbientalId");
+
+                    b.ToTable("Condicionantes");
+                });
+
+            modelBuilder.Entity("EcoTrack.Domain.Entities.Documento", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ClienteId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DataUpload")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DropboxFileId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DropboxPath")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Extensao")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("LicencaAmbientalId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("ProcessoAmbientalId")
+                        .HasColumnType("uuid");
+
+                    b.Property<long>("TamanhoBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("LicencaAmbientalId");
+
+                    b.HasIndex("ProcessoAmbientalId");
+
+                    b.ToTable("Documentos");
+                });
+
+            modelBuilder.Entity("EcoTrack.Domain.Entities.LicencaAmbiental", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DataEmissao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DataValidade")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Observacoes")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OrgaoAmbiental")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ProcessoAmbientalId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProcessoAmbientalId");
+
+                    b.ToTable("LicencasAmbientais");
+                });
+
             modelBuilder.Entity("EcoTrack.Domain.Entities.ProcessoAmbiental", b =>
                 {
                     b.Property<Guid>("Id")
@@ -219,6 +352,52 @@ namespace EcoTrack.Infrastructure.Migrations
                     b.ToTable("Servicos");
                 });
 
+            modelBuilder.Entity("EcoTrack.Domain.Entities.Condicionante", b =>
+                {
+                    b.HasOne("EcoTrack.Domain.Entities.LicencaAmbiental", "LicencaAmbiental")
+                        .WithMany("Condicionantes")
+                        .HasForeignKey("LicencaAmbientalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LicencaAmbiental");
+                });
+
+            modelBuilder.Entity("EcoTrack.Domain.Entities.Documento", b =>
+                {
+                    b.HasOne("EcoTrack.Domain.Entities.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("EcoTrack.Domain.Entities.LicencaAmbiental", "LicencaAmbiental")
+                        .WithMany()
+                        .HasForeignKey("LicencaAmbientalId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("EcoTrack.Domain.Entities.ProcessoAmbiental", "ProcessoAmbiental")
+                        .WithMany()
+                        .HasForeignKey("ProcessoAmbientalId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("LicencaAmbiental");
+
+                    b.Navigation("ProcessoAmbiental");
+                });
+
+            modelBuilder.Entity("EcoTrack.Domain.Entities.LicencaAmbiental", b =>
+                {
+                    b.HasOne("EcoTrack.Domain.Entities.ProcessoAmbiental", "ProcessoAmbiental")
+                        .WithMany()
+                        .HasForeignKey("ProcessoAmbientalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ProcessoAmbiental");
+                });
+
             modelBuilder.Entity("EcoTrack.Domain.Entities.ProcessoAmbiental", b =>
                 {
                     b.HasOne("EcoTrack.Domain.Entities.Cliente", "Cliente")
@@ -263,6 +442,11 @@ namespace EcoTrack.Infrastructure.Migrations
             modelBuilder.Entity("EcoTrack.Domain.Entities.CategoriaServico", b =>
                 {
                     b.Navigation("Servicos");
+                });
+
+            modelBuilder.Entity("EcoTrack.Domain.Entities.LicencaAmbiental", b =>
+                {
+                    b.Navigation("Condicionantes");
                 });
 
             modelBuilder.Entity("EcoTrack.Domain.Entities.ProcessoAmbiental", b =>

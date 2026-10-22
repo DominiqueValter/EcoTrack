@@ -12,6 +12,9 @@ public class EcoTrackDbContext : DbContext
     public DbSet<Servico> Servicos { get; set; }
     public DbSet<ProcessoAmbiental> ProcessosAmbientais { get; set; }
     public DbSet<ProcessoServico> ProcessosServicos { get; set; }
+    public DbSet<LicencaAmbiental> LicencasAmbientais { get; set; }
+    public DbSet<Condicionante> Condicionantes { get; set; }
+    public DbSet<Documento> Documentos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -44,5 +47,40 @@ public class EcoTrackDbContext : DbContext
             .WithMany()
             .HasForeignKey(ps => ps.ServicoId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // ProcessoAmbiental -> LicencaAmbiental (1:N)
+        modelBuilder.Entity<LicencaAmbiental>()
+            .HasOne(l => l.ProcessoAmbiental)
+            .WithMany()
+            .HasForeignKey(l => l.ProcessoAmbientalId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // LicencaAmbiental -> Condicionante (1:N)
+        modelBuilder.Entity<Condicionante>()
+            .HasOne(c => c.LicencaAmbiental)
+            .WithMany(l => l.Condicionantes)
+            .HasForeignKey(c => c.LicencaAmbientalId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Documento -> Cliente (N:1 opcional)
+        modelBuilder.Entity<Documento>()
+            .HasOne(d => d.Cliente)
+            .WithMany()
+            .HasForeignKey(d => d.ClienteId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        // Documento -> ProcessoAmbiental (N:1 opcional)
+        modelBuilder.Entity<Documento>()
+            .HasOne(d => d.ProcessoAmbiental)
+            .WithMany()
+            .HasForeignKey(d => d.ProcessoAmbientalId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        // Documento -> LicencaAmbiental (N:1 opcional)
+        modelBuilder.Entity<Documento>()
+            .HasOne(d => d.LicencaAmbiental)
+            .WithMany()
+            .HasForeignKey(d => d.LicencaAmbientalId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }
