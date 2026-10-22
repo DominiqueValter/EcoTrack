@@ -242,6 +242,156 @@ namespace EcoTrack.Infrastructure.Migrations
                     b.ToTable("LicencasAmbientais");
                 });
 
+            modelBuilder.Entity("EcoTrack.Domain.Entities.Mtr", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CdfNumero")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ClienteId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DataEmissao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DataRecebimento")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DestinadorCnpj")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DestinadorNome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("DestinadorUnidade")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GeradorCnpj")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GeradorNome")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GeradorUnidade")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Justificativa")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MtrProvisorioNumero")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NomeMotorista")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NumeroMtr")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ObservacaoDestinador")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ObservacaoGerador")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PlacaVeiculo")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ResponsavelEmissao")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ResponsavelRecebimento")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Situacao")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("TemMtrComplementar")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("TipoManifesto")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TransportadorCnpj")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TransportadorNome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TransportadorUnidade")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Tratamento")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
+
+                    b.ToTable("Mtrs");
+                });
+
+            modelBuilder.Entity("EcoTrack.Domain.Entities.MtrResiduo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Classe")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CodInterno")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DescrInterna")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("MtrId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("QuantidadeIndicada")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("QuantidadeRecebida")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("ResiduoCodDescricao")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("ResiduoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Unidade")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MtrId");
+
+                    b.HasIndex("ResiduoId");
+
+                    b.ToTable("MtrResiduos");
+                });
+
             modelBuilder.Entity("EcoTrack.Domain.Entities.ProcessoAmbiental", b =>
                 {
                     b.Property<Guid>("Id")
@@ -318,6 +468,37 @@ namespace EcoTrack.Infrastructure.Migrations
                     b.HasIndex("ServicoId");
 
                     b.ToTable("ProcessosServicos");
+                });
+
+            modelBuilder.Entity("EcoTrack.Domain.Entities.Residuo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Classe")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CodigoIbama")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("EstadoFisico")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Residuos");
                 });
 
             modelBuilder.Entity("EcoTrack.Domain.Entities.Servico", b =>
@@ -398,6 +579,35 @@ namespace EcoTrack.Infrastructure.Migrations
                     b.Navigation("ProcessoAmbiental");
                 });
 
+            modelBuilder.Entity("EcoTrack.Domain.Entities.Mtr", b =>
+                {
+                    b.HasOne("EcoTrack.Domain.Entities.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+                });
+
+            modelBuilder.Entity("EcoTrack.Domain.Entities.MtrResiduo", b =>
+                {
+                    b.HasOne("EcoTrack.Domain.Entities.Mtr", "Mtr")
+                        .WithMany("ItensResiduos")
+                        .HasForeignKey("MtrId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EcoTrack.Domain.Entities.Residuo", "Residuo")
+                        .WithMany()
+                        .HasForeignKey("ResiduoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Mtr");
+
+                    b.Navigation("Residuo");
+                });
+
             modelBuilder.Entity("EcoTrack.Domain.Entities.ProcessoAmbiental", b =>
                 {
                     b.HasOne("EcoTrack.Domain.Entities.Cliente", "Cliente")
@@ -447,6 +657,11 @@ namespace EcoTrack.Infrastructure.Migrations
             modelBuilder.Entity("EcoTrack.Domain.Entities.LicencaAmbiental", b =>
                 {
                     b.Navigation("Condicionantes");
+                });
+
+            modelBuilder.Entity("EcoTrack.Domain.Entities.Mtr", b =>
+                {
+                    b.Navigation("ItensResiduos");
                 });
 
             modelBuilder.Entity("EcoTrack.Domain.Entities.ProcessoAmbiental", b =>

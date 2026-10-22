@@ -15,6 +15,9 @@ public class EcoTrackDbContext : DbContext
     public DbSet<LicencaAmbiental> LicencasAmbientais { get; set; }
     public DbSet<Condicionante> Condicionantes { get; set; }
     public DbSet<Documento> Documentos { get; set; }
+    public DbSet<Residuo> Residuos { get; set; }
+    public DbSet<Mtr> Mtrs { get; set; }
+    public DbSet<MtrResiduo> MtrResiduos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -82,5 +85,27 @@ public class EcoTrackDbContext : DbContext
             .WithMany()
             .HasForeignKey(d => d.LicencaAmbientalId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        // Cliente -> Mtr (1:N)
+        modelBuilder.Entity<Mtr>()
+            .HasOne(m => m.Cliente)
+            .WithMany()
+            .HasForeignKey(m => m.ClienteId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Mtr -> MtrResiduo (1:N)
+        modelBuilder.Entity<MtrResiduo>()
+            .HasOne(mr => mr.Mtr)
+            .WithMany(m => m.ItensResiduos)
+            .HasForeignKey(mr => mr.MtrId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Residuo -> MtrResiduo (1:N opcional, pois o residuo pode vir apenas como texto no relatório)
+        modelBuilder.Entity<MtrResiduo>()
+            .HasOne(mr => mr.Residuo)
+            .WithMany()
+            .HasForeignKey(mr => mr.ResiduoId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

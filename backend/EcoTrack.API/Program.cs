@@ -21,6 +21,7 @@ builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
 builder.Services.AddScoped<IProcessoAmbientalRepository, ProcessoAmbientalRepository>();
 builder.Services.AddScoped<ILicencaAmbientalRepository, LicencaAmbientalRepository>();
 builder.Services.AddScoped<IDocumentoRepository, DocumentoRepository>();
+builder.Services.AddScoped<IMtrRepository, MtrRepository>();
 
 // Serviços
 builder.Services.AddScoped<ClienteService>();
@@ -30,6 +31,7 @@ builder.Services.AddScoped<ProcessoAmbientalService>();
 builder.Services.AddScoped<LicencaAmbientalService>();
 builder.Services.AddScoped<IDropboxService, DropboxService>();
 builder.Services.AddScoped<DocumentoService>();
+builder.Services.AddScoped<MtrImportService>();
 
 // OpenAPI
 builder.Services.AddOpenApi();
